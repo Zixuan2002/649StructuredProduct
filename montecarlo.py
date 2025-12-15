@@ -97,3 +97,5 @@ def pricing(s1,s2,s3,r):
 option_price = pricing(tsla,meta,msft,r)    
 
 print(f'Option Price: {option_price:.2f}')
+# add a plot to visualize some of the simulated paths
+# add a write-out to a .txt file to save results
