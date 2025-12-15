@@ -50,30 +50,31 @@ def option_pricing(s1, s2, s3, K, T, bar1, bar2, c):
 
         p0 = np.minimum.reduce([path1[0:252] / path1[0],
                                 path2[0:252] / path2[0],
-                                path3[0:252] / path3[0]])
+                                path3[0:252] / path3[0]]) # the path of P in year 1
         p1 = np.minimum.reduce([path1[252:] / path1[252],
                                 path2[252:] / path2[252],
-                                path3[252:] / path3[252]])
+                                path3[252:] / path3[252]]) # the path of P in year 2
 
         awarded = False
+        # for phase 1
         for i in range(len(p0)):
             if p0[i] >= bar1:
-                payoffs[j] = 1 + (i // 63) * c / 4
+                payoffs[j] = 1 + (i // 63) * c / 4 # need to correct
                 awarded = True
                 break
-
+        # for phase 2
         if not awarded:
             for i in range(len(p1)):
                 if p1[i] >= bar2:
-                    payoffs[j] = 1 + ((i + 252) // 63) * c / 4
+                    payoffs[j] = 1 + ((i + 252) // 63) * c / 4 # need to correct
                     awarded = True
                     break
 
         if not awarded:
-            if p0.min() >= K and p1.min() >= K:
-                payoffs[j] = 1 + c * T
+            if p1[-1] >= K:
+                payoffs[j] = 1 + c * T # need to correct
             else:
-                payoffs[j] = p1[-1]
+                payoffs[j] = N/(K*bar1*S0) * p1[-1] # need to correct
 
     return payoffs
 
@@ -94,4 +95,5 @@ def pricing(s1,s2,s3,r):
     return price
 
 option_price = pricing(tsla,meta,msft,r)    
+
 print(f'Option Price: {option_price:.2f}')
