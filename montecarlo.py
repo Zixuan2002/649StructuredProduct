@@ -37,6 +37,7 @@ N = 1e6
 T = 2.0       # 时间跨度：2年
 M = 10000       # 模拟路径数量
 s0 = [439.58, 491.02, 666.8]
+#use the correlation matrix generated
 corr_matrix = np.array([
     [1.00, 0.45, 0.40], # TSLA 与其他
     [0.45, 1.00, 0.60], # MSFT 与其他
@@ -96,9 +97,24 @@ def option_pricing(s1, s2, s3, K, T, bar1, bar2, c,N):
                 for l in range(1,9):
                     payoffs[j] += np.exp(-r * (l/4)) * c / 4 *N
             else:
-                payoffs[j] = N/(K*bar1) * p1[-1]*p0[-1] # need to correct
-                for l in range(1,9):
-                    payoffs[j] += np.exp(-r * (l/4)) * c / 4 *N
+                # Identify worst-performing stock at maturity relative to ISSUE-DATE initial
+                ratios_to_issue = np.array([
+                    path1[-1] / path1[0],
+                    path2[-1] / path2[0],
+                    path3[-1] / path3[0],
+                ])
+                j_star = int(np.argmin(ratios_to_issue))
+
+                S0_star = np.array([path1[0], path2[0], path3[0]])[j_star]
+                ST_star = np.array([path1[-1], path2[-1], path3[-1]])[j_star]
+
+                shares = N / (K * bar1 * S0_star)
+                payoffs[j] = np.exp(-r * T) * shares * ST_star
+
+                # add coupons (discounted) exactly as you do in the ">=K" case:
+                for l in range(1, 9):
+                    payoffs[j] += np.exp(-r * (l/4)) * (c/4) * N
+
 
     return payoffs
 
