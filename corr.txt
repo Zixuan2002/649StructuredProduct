@@ -1,0 +1,8 @@
+	r_META	r_MSFT	r_TSLA
+r_META	1.0000	0.5848	0.3254
+r_MSFT	0.5848	1.0000	0.4097
+r_TSLA	0.3254	0.4097	1.0000
+
+95.0% CI for correlation between META and MSFT: (0.5585, 0.6100)
+95.0% CI for correlation between META and TSLA: (0.2900, 0.3599)
+95.0% CI for correlation between TSLA and MSFT: (0.3766, 0.4418)
